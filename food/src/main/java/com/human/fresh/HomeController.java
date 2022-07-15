@@ -64,8 +64,9 @@ public class HomeController {
 		return "storeup";
 	}
 	
+	//메뉴타입 select option
 	@ResponseBody
-	@RequestMapping(value="/up", produces="application/json;charset=UTF-8")
+	@RequestMapping(value="/mls", produces="application/json;charset=UTF-8")
 	public String doUp() {
 		ifresh ifresh=sqlSession.getMapper(ifresh.class);
 		ArrayList<stypeVO> arsvo=ifresh.s_type();
@@ -82,7 +83,22 @@ public class HomeController {
 		return ja.toJSONString();
 	}
 	
+	//가게 등록
+	@ResponseBody
+	@RequestMapping(value="/store", produces="application/json;charset=UTF-8")
+	public String doStore(@RequestParam("sid") String m_id, @RequestParam("sname") String s_name,
+						@RequestParam("saddress") String s_address, @RequestParam("snum") String s_num,
+						@RequestParam("stel") String s_mobile, @RequestParam("smenu") int s_type,
+						@RequestParam("simg") String s_img) {
+		ifresh ifresh=sqlSession.getMapper(ifresh.class);
+		ifresh.isertStore(m_id,s_name, s_address,s_num,s_mobile,s_type,s_img);
+		
+		return "0";
+	}
 	
-	
-	
+	//메뉴등록
+	@RequestMapping("/m_up")
+	public String doMup() {
+		return "menuup";
+	}
 }

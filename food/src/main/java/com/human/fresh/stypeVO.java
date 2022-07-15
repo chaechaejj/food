@@ -1,6 +1,6 @@
 package com.human.fresh;
 
-public class stypeVO {
+public class stypeVO { //가게등록에 메뉴타입
 	private int s_type;
 	private String type_name;
 	

@@ -7,14 +7,14 @@
 <![CDATA[
 ]]>	
 </select> -->
-
-<!-- 비밀번호 찾기 -->
-<!-- <select id='findpwd' resultType="com.human.fresh.findDTO">
-	select * from member where m_id=#{param1} and m_name=#{param2} and m_email=#{param3}
-</select> -->
+<!-- 메뉴타입 목록 -->
 <select id="s_type" resultType="com.human.fresh.stypeVO">
 	select s_type, type_name from s_type
 </select>
-
+<!-- 가게 등록 -->
+<insert id="isertStore">
+insert into store values(store_seq.nextval,#{param1},#{param2},#{param3},#{param4},#{param5},
+						#{param6},#{param7})
+</insert>
 
 </mapper>

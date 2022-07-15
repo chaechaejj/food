@@ -1,6 +1,6 @@
 package com.human.fresh;
 
-public class storeVO {
+public class storeVO { //가게등록 insert
 	private int s_seqno;
 	private String m_id;
 	private String s_name;
