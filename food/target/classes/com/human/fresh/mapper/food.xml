@@ -12,9 +12,15 @@
 	select s_type, type_name from s_type
 </select>
 <!-- 가게 등록 -->
-<insert id="isertStore">
+<insert id="insertStore">
 insert into store values(store_seq.nextval,#{param1},#{param2},#{param3},#{param4},#{param5},
-						#{param6},#{param7})
+						#{param6},#{param7},#{param8},#{param9},#{param10})
 </insert>
-
+<!-- 매뉴 등록 -->
+<insert id="insertmenu">
+	insert into menu values(menu_seq.nextval, #{param1},#{param2},#{param3},#{param4},#{param5},#{param6})
+</insert>
+<select id="selectMenulit" resultType="com.human.fresh.menuVO">
+	select menu_seqno, menu_name, menu_price, menu_ex, menu_img, menu_cal from menu where s_se=#{param1} order by menu_seqno
+</select>
 </mapper>

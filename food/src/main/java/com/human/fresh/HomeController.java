@@ -59,6 +59,7 @@ public class HomeController {
 		return "login";
 	}
 	
+	//가게 등록 jsp
 	@RequestMapping("/s_up")
 	public String doS_up() {
 		return "storeup";
@@ -66,11 +67,12 @@ public class HomeController {
 	
 	//메뉴타입 select option
 	@ResponseBody
-	@RequestMapping(value="/mls", produces="application/json;charset=UTF-8")
-	public String doUp() {
+	@RequestMapping(value="/mtp", produces="application/json;charset=UTF-8")
+	public String doMtp() {
 		ifresh ifresh=sqlSession.getMapper(ifresh.class);
 		ArrayList<stypeVO> arsvo=ifresh.s_type();
 		System.out.println("s_type.size=["+arsvo.size()+"]");
+		
 		JSONArray ja=new JSONArray();
 		for(int i=0;i<arsvo.size();i++) {
 			stypeVO list=arsvo.get(i);
@@ -85,20 +87,76 @@ public class HomeController {
 	
 	//가게 등록
 	@ResponseBody
-	@RequestMapping(value="/store", produces="application/json;charset=UTF-8")
-	public String doStore(@RequestParam("sid") String m_id, @RequestParam("sname") String s_name,
-						@RequestParam("saddress") String s_address, @RequestParam("snum") String s_num,
-						@RequestParam("stel") String s_mobile, @RequestParam("smenu") int s_type,
-						@RequestParam("simg") String s_img) {
+	@RequestMapping(value="/store", method=RequestMethod.POST, produces="application/json;charset=UTF-8")
+	public String doStore(@RequestParam("sid") String m_id, @RequestParam("sname") String s_name, 
+						@RequestParam("post") String postcode, @RequestParam("saddress") String s_address,  
+						@RequestParam("sdetail") String detailAddress, @RequestParam("sextra") String extraAddress,
+						@RequestParam("snum") String s_num, @RequestParam("stel") String s_mobile, 
+						@RequestParam("smenu") int s_type, @RequestParam("simg") String s_img) {
 		ifresh ifresh=sqlSession.getMapper(ifresh.class);
-		ifresh.isertStore(m_id,s_name, s_address,s_num,s_mobile,s_type,s_img);
+		ifresh.insertStore(m_id, s_name, postcode, s_address, detailAddress, extraAddress, s_num, s_mobile, s_type, s_img);
 		
 		return "0";
 	}
 	
-	//메뉴등록
+	//메뉴등록 jsp
 	@RequestMapping("/m_up")
 	public String doMup() {
 		return "menuup";
+	}
+	
+	//메뉴등록
+	@ResponseBody
+	@RequestMapping(value="/menu", method=RequestMethod.POST, produces="application/json;charset=UTF-8")
+	public String doMenu(@RequestParam("s_seq") String s_seq, @RequestParam("m_name") String m_name,
+						@RequestParam("m_price") int m_price, @RequestParam("m_ex") String m_ex,
+						@RequestParam("m_img") String m_img, @RequestParam("m_cal") String m_cal) {
+		ifresh ifresh=sqlSession.getMapper(ifresh.class);
+		ifresh.insertmenu(s_seq, m_name, m_price, m_ex, m_img, m_cal);
+		
+		return "0";
+	}
+	
+	
+	//메뉴리스트 불러오기
+	@ResponseBody
+	@RequestMapping(value="/mls", method=RequestMethod.POST,produces="application/json;charset=UTF-8")
+	public String doMls(@RequestParam("s_seq") String s_se, Model model) {
+		ifresh ifresh=sqlSession.getMapper(ifresh.class);
+		ArrayList<menuVO> armenu=ifresh.selectMenulit(s_se);
+		System.out.println("s_list.size=["+armenu.size()+"]");
+		
+		JSONArray ja=new JSONArray();
+		for(int i=0;i<armenu.size();i++) {
+			menuVO list=armenu.get(i);
+			JSONObject jo=new JSONObject();
+			jo.put("m_seq", list.getMenu_seqno());
+			jo.put("m_img", list.getMenu_img());
+			jo.put("m_name", list.getMenu_name());
+			jo.put("m_price", list.getMenu_price());
+			jo.put("m_cal", list.getMenu_cal());
+			jo.put("m_ex", list.getMenu_ex());
+			ja.add(jo);
+		}
+		System.out.println("ja.s_list()="+ja.toJSONString());
+		return ja.toJSONString();
+	}
+	
+	
+	//메뉴 수정하기
+	@ResponseBody
+	@RequestMapping(value="/menumdf", produces="application/json;charset=UTF-8")
+	public String doMenuModify() {
+		
+		return "";
+	}
+	
+	
+	//메뉴 삭제하기
+	@ResponseBody
+	@RequestMapping(value="/menudlt", produces="application/json;charset=UTF-8")
+	public String doMenuDelete() {
+		
+		return "";
 	}
 }
