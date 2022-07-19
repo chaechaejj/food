@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.human.fresh.iMember">
+
+<!-- 회원가입 -->
+<select id="idOverlap" resultType="int">
+	select count(*) cnt from member where m_id=#{param1}
+</select>
+<insert id="addMember">
+	insert into member values(#{param1},#{param2},#{param3},#{param4},#{param5},#{param6},#{param7},#{param8},#{param9},#{param10})
+</insert>
+<insert id="addDelivery">
+	insert into delivery values(d_seqno.nextval,#{param1},#{param2},#{param3},#{param4},#{param5},#{param6},#{param7})
+</insert>
+
+<!-- 로그인 -->
+<select id="checkId" resultType="int">
+	select count(*) cnt from member where m_id=#{param1} and m_pwd=#{param2}
+</select>
+<select id="checkType" resultType="int">
+	select m_type from member where m_id=#{param1} and m_pwd=#{param2}
+</select>
+
+<!-- 회원정보수정 -->
+<select id="userList" resultType="com.human.fresh.mDTO">
+	select * from member where m_id=#{param1}
+</select>
+
+<!-- 배송지 주소 개수 -->
+<select id="cntAddress" resultType="int">
+	select count(*) cnt from delivery where m_id=#{param1}
+</select>
+
+<!-- 비밀번호 변경 -->
+<update id="updatePwd">
+	update member set m_pwd=#{param1} where m_id=#{param2}
+</update>
+
+<!-- 로그인정보 수정 -->
+<update id="updateLogin">
+	update member set m_name=#{param1}, m_mobile=#{param2}, m_email=#{param3} where m_id=#{param4}
+</update>
+
+<!-- 회원탈퇴 -->
+<delete id="delInformation">
+	delete from member where m_id=#{param1}
+</delete>
+<delete id="delDelivery">
+	delete from delivery where m_id=#{param1}
+</delete>
+
+<!-- 배송지목록 -->
+<select id="deliveryList" resultType="com.human.fresh.mDTO">
+	select * from delivery where m_id=#{param1}
+</select>
+
+<!-- 기본배송지 변경 -->
+<update id="upDelivery">
+	update member set m_postcode=#{param1}, m_address=#{param2}, m_detailaddress=#{param3}, m_extraaddress=#{param4} where m_id=#{param5}
+</update>
+
+<!-- 배송지목록 수정 -->
+<select id="seList" resultType="com.human.fresh.mDTO">
+	select * from delivery where d_seqno=#{param1}
+</select>
+<update id="upDeliveryList">
+	update delivery set  m_postcode=#{param1}, m_address=#{param2}, m_detailaddress=#{param3}, m_extraaddress=#{param4}, d_name=#{param5}, d_mobile=#{param6} where d_seqno=#{param7}
+</update>
+
+<!-- 배송지목록 삭제 -->
+<delete id="delSe">
+	delete from delivery where d_seqno=#{param1}
+</delete>
+
+</mapper>

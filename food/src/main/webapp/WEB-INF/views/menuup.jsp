@@ -9,15 +9,25 @@
 <style>
 #menuin-box{
 	background:skyblue;
+	
 }
 #list-box{
 	background:yellow;
+	/* margin:10px auto; */
+/*  	display:flex;
+	flex-wrap:wrap;
+	flex:none; */
 }
+/* #list-box >span >h3{
+	padding: 0 100px 0 100px;
+}
+ */
 #table-box{
 	background:pink;
 	overflow:scroll;
-	width:300px;
+	width:400px;
 	height:400px;
+	margin:auto;
 }
 #tbl, tr, td{
 	border-collapse:collapse;
@@ -26,23 +36,26 @@
 </style>
 <body>
 <div id="menuin-box" style="float:left;width:400px;height:500px">
+<form action="menu" method="post" enctype="multipart/form-data">
 	<span><h3>메뉴 등록하기</h3></span>
-	<input type=hidden id=s_seq value="${store_seq}"> <!-- 가게시퀀스 -->
-	<p>메뉴이름</p><input type=text id=memuname />
-	<p>가격</p><input type=number id=menuprice min=0 val=0 />원
-	<p>칼로리</p><input type=number id=menukcal min=0 />kcal
-	<p>설명</p><input tpe=text id=menuex />
-	<p>메뉴이미지</p><input type=file id=m_img><br><br>
+	<input type=hidden id=s_seq name=s_seq value="23"> <!-- 가게시퀀스 -->
+	<p>메뉴이름</p><input type=text id=memuname name=memuname >
+	<p>가격</p><input type=number id=menuprice name=menuprice min=0 val=0 >원
+	<p>칼로리</p><input type=text id=menukcal name=menukcal min=0 >kcal
+	<p>설명</p><input type=text id=menuex name=menuex >
+	<p>메뉴이미지</p>
+	<input type=file id=m_img name=file multiple="multiple"><br><br>
 	<input type=submit id=btnIn value="추가">&nbsp;&nbsp;
 	<input type=button id=btnReset value="비우기">&nbsp;&nbsp;
 	<input type=button id=btnDelete value="삭제">
+</form>
 </div>
 
 
 <div id="list-box" style="float:left;width:400px;height:500px;">
 <span><h3>메뉴목록</h3></span>
 	<div id="table-box">
-		<input type=hidden id="hdseq" value="${s_seq}" />
+		<input type=hidden id="hdseq" value="${s_seq}">
 		<table id="tbl"></table>
 	</div>
 </div>
@@ -60,49 +73,72 @@ $(document)
 	$('#menukcal').val('');
 	$('#menuex').val('');
 	$('#m_img').val('');
-});
+})
+
+.on('click','#btnSel',function(){
+	$('#')
+	
+}) 
 
 .on('click','#btnDelete',function(){
+	let s_seq= '23';       //$('#s_seq').val(); /* 가게 시퀀스 */
+	let m_seq=$('#m_seq').val();
+	console.log("delete=>s_seq["+s_seq+"], m_seq["+m_seq+"]");
+	
 	$.ajax({
-		url:'d_menu', type:'post', dataType:'text', data:{}
+		url:'d_menu', type:'post', dataType:'text', data:{s_seq:s_seq, m_seq:m_seq},
+		success: function(){
+			if(!confirm("선택한 메뉴를 삭제하시겠습니까?")) return false;
+			$('#btnReset').trigger('click');
+		}
 	})
 })
 
 
-//메뉴 등록
-.on('click','#btnIn',function(){
-	let s_seq= '23';     //$('#s_seq').val(); /* 가게 시퀀스 */
+//메뉴 등록 //$('#s_seq').val(); /* 가게 시퀀스 */
+/*  .on('click','#btnIn',function(){
+	let s_seq= '23';    
 	let m_name=$('#memuname').val();
 	let m_price=$('#menuprice').val();
 	let m_ex=$('#menuex').val();
-	let m_img=$('#m_img').val();
-	let m_cal=$('#menukcal').val();
+	let mg=$('#m_img').val();
+	let ar=mg.split('\\');
+	let m_img=ar[ar.length-1];
 	
-	console.log("s_seq["+s_seq+"], m_name["+m_name+"], m_price["+m_price+"], m_ex["+m_ex+"], m_img["+m_img+"], m_cal["+m_cal+"]");
+	let m_cal=$('#menukcal').val();
+	let m_seq=$('#m_seq').val(); 
+	
+	console.log("s_seq["+s_seq+"], m_name["+m_name+"], m_price["+m_price+"], m_ex["+m_ex
+				+"], m_img["+m_img+"], m_cal["+m_cal+"]"+", m_seq["+m_seq+"]");
+	
 	if($('#btnIn').val()=="추가"){
 		$.ajax({
 			url:'menu', type:'post', dataType:'json',
 			data:{s_seq:s_seq, m_name:m_name, m_price:m_price, m_ex:m_ex, m_img:m_img, m_cal:m_cal},
 			success: function(){
-				loadmenulist();
-				$('#btnReset').trigger('click');
+				$('#btnsub').trigger('click');
+			    loadmenulist();
+				$('#btnReset').trigger('click');   
+				
 			}
-		})
+		});
 	}else if($('#btnIn').val()=="수정"){
 		$.ajax({
 			url:'menumdf', type:'post', dataType:'json',
-			data:{s_seq:s_seq, m_name:m_name, m_price:m_price, m_ex:m_ex, m_img:m_img, m_cal:m_cal},
+			data:{s_seq:s_seq, m_seq:m_seq, m_name:m_name, m_price:m_price, 
+				  m_ex:m_ex, m_img:m_img, m_cal:m_cal},
 			success: function(){
 				loadmenulist();
 				$('#btnReset').trigger('click');
+				
 			}
-		})
+		});
 	}
-});
+})  */
 
 //메뉴목록 리스트 보여주기
 function loadmenulist(){
-	let s_seq='23';    //$('#hdseq').val();
+	let s_seq='23';   //$('#s_seq').val(); /* 가게 시퀀스 */
 	$.ajax({
 		url:'mls', type: 'post', dataType:'json', data:{s_seq:s_seq},
 		success: function(data){
@@ -110,18 +146,17 @@ function loadmenulist(){
 			let str='';
 			for(let i=0;i<data.length;i++){
 				let jo=data[i];
-				str+="<tr><td rowspan=4 value="+jo['m_seq']+">"+jo['m_img']+"</td><td>메뉴이름</td><td>"+jo['m_name']
-						+"</td><td>가격</td><td>"+jo['m_price']
-						+"원</td></tr><tr><td>칼로리</td><td colspan=3 align=left>"
-						+jo['m_cal']+"kcal</td></tr><tr><td colspan=4 align=left>설명</td></tr><tr><td colspan=4>"
-						+jo['m_ex']+"</td></tr>";
+				str+="<tr><td rowspan=4><img src='/test/"
+					+jo['m_img']+"'></td><td>메뉴이름</td><td>"+jo['m_name']
+					+"</td><td>가격</td><td>"+jo['m_price']
+					+"원</td><td rowspan=4 id=m_seq value="+jo['m_seq']
+					+"><input type=button id=btnSel value=선택></td></tr><tr><td>칼로리</td><td colspan=3 align=left>"
+					+jo['m_cal']+"kcal</td></tr><tr><td colspan=4 align=left>설명</td></tr><tr><td colspan=4>"
+					+jo['m_ex']+"</td></tr>";
 			}
 			$('#tbl').append(str);
-				
 		}
 	})
 }
-
-
 </script>
 </html>
