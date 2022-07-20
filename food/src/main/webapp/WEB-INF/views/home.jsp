@@ -20,8 +20,12 @@ a:hover{
 	</c:if>
 	<c:if test="${userType == '사장님' }">
 		<p align=right><a onclick=location.href='signUp'>${userinfo} 님👩🏻‍🍳</a> &nbsp;<a href='logout'>로그아웃</a></p>
+
 	</c:if>
+	
 </c:if>
+
+
 
 </body>
 </html>

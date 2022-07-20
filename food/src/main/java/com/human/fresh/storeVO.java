@@ -9,6 +9,9 @@ public class storeVO { //가게등록 insert
 	private String s_mobile;
 	private int s_type;
 	private String s_img;
+    private String s_postcode;
+    private String s_detailaddress;
+    private String s_extraaddress;
 	
 	public storeVO() {
 	}
@@ -75,6 +78,30 @@ public class storeVO { //가게등록 insert
 
 	public void setS_img(String s_img) {
 		this.s_img = s_img;
+	}
+
+	public String getS_postcode() {
+		return s_postcode;
+	}
+
+	public void setS_postcode(String s_postcode) {
+		this.s_postcode = s_postcode;
+	}
+
+	public String getS_detailaddress() {
+		return s_detailaddress;
+	}
+
+	public void setS_detailaddress(String s_detailaddress) {
+		this.s_detailaddress = s_detailaddress;
+	}
+
+	public String getS_extraaddress() {
+		return s_extraaddress;
+	}
+
+	public void setS_extraaddress(String s_extraaddress) {
+		this.s_extraaddress = s_extraaddress;
 	}
 	
 	

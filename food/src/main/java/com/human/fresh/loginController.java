@@ -212,6 +212,14 @@ public class loginController {
 		int cnt=ime.cntAddress((String)session.getAttribute("userid"));
 		model.addAttribute("cnt",cnt);
 		
+	      ifresh ifr=sqlSession.getMapper(ifresh.class);
+	      int cntStore = ifr.cntStore((String)session.getAttribute("userid"));
+	      model.addAttribute("cntStore",cntStore);
+
+	      storeVO sVO = ifr.selStore((String)session.getAttribute("userid"));
+	      model.addAttribute("sVO",sVO);
+	      
+	      model.addAttribute("userType",session.getAttribute("userType"));
 		//System.out.println(mdto.m_name);
 		return "signUp";
 	}

@@ -57,7 +57,6 @@ public class HomeController {
 //		return "home";
 //	}
 	
-
 //	@RequestMapping("/login")
 //	public String doLogin() {
 //		return "login";
@@ -65,7 +64,9 @@ public class HomeController {
 	
 	//가게 등록 jsp
 	@RequestMapping("/s_up")
-	public String doS_up() {
+	public String doS_up(HttpServletRequest req, Model model) {
+		HttpSession session=req.getSession();
+		model.addAttribute("userinfo",session.getAttribute("userid"));
 		return "storeup";
 	}
 	
@@ -92,11 +93,18 @@ public class HomeController {
 	//가게 등록
 	@ResponseBody
 	@RequestMapping(value="/store", method=RequestMethod.POST, produces="application/json;charset=UTF-8")
-	public String doStore(@RequestParam("sid") String m_id, @RequestParam("sname") String s_name, 
-						@RequestParam("post") String postcode, @RequestParam("saddress") String s_address,  
-						@RequestParam("sdetail") String detailAddress, @RequestParam("sextra") String extraAddress,
-						@RequestParam("snum") String s_num, @RequestParam("stel") String s_mobile, 
-						@RequestParam("smenu") int s_type, @RequestParam("simg") String s_img) {
+	public String doStore(HttpServletRequest req) {
+		String m_id=req.getParameter("sid");
+		String s_name=req.getParameter("sname");
+		String postcode=req.getParameter("post");
+		String s_address=req.getParameter("saddress");
+		String detailAddress=req.getParameter("sdetail");
+		String extraAddress=req.getParameter("sextra");
+		String s_num=req.getParameter("snum");
+		String s_mobile=req.getParameter("stel");
+		int s_type=Integer.parseInt(req.getParameter("smenu"));
+		String s_img=req.getParameter("simg");
+		
 		ifresh ifresh=sqlSession.getMapper(ifresh.class);
 		ifresh.insertStore(m_id, s_name, postcode, s_address, detailAddress, extraAddress, s_num, s_mobile, s_type, s_img);
 		
@@ -106,61 +114,59 @@ public class HomeController {
 	//메뉴등록 jsp
 	@RequestMapping("/m_up")
 	public String doMup() {
+		//가게시퀀스 가져오기
 		return "menuup";
 	}
 	
-	//메뉴등록
-	
+	//메뉴등록 & 수정
 	@RequestMapping(value="/menu")
-	public String doMenu(@RequestParam("s_seq") String s_seq, @RequestParam("memuname") String m_name,
-						@RequestParam("menuprice") int m_price, @RequestParam("menuex") String m_ex, 
-						@RequestParam("menukcal") String m_cal, @RequestParam("file") MultipartFile file) {
-		  String upLoadDirectory= "C:/Users/admin/git/repository/food/src/main/webapp/resources/test";
+	public String doMenu(HttpServletRequest req, MultipartHttpServletRequest mreq) {
+		ifresh ifresh=sqlSession.getMapper(ifresh.class);
+		String name=req.getParameter("menuname");
+		int price=Integer.parseInt(req.getParameter("menuprice"));
+		String ex=req.getParameter("menuex");
+		String img=req.getParameter("m_img");
+		String cal=req.getParameter("menukcal");
+		int m_seq=Integer.parseInt(req.getParameter("m_seq"));
+		String s_seq=req.getParameter("s_seq");
+		MultipartFile file=mreq.getFile("file");
+		
+		String upLoadDirectory= "C:/Users/admin/git/repository/food/src/main/webapp/resources/test";
+		System.out.println("file="+file+"menuname="+name);
 		  
-	      System.out.println("file="+file+"menuname="+m_name);
-	      
-	      String uploadFileName = file.getOriginalFilename();
-	      uploadFileName = uploadFileName.substring(uploadFileName.lastIndexOf("/")+1); //문자열 자르기
-	      
-	      UUID uuid=UUID.randomUUID(); //랜덤이름생성
-	      uploadFileName=uuid.toString() + "_" + uploadFileName; //랜덤이름_업로드파일명
-	      File f= new File(upLoadDirectory,uploadFileName);
-	      try {
-			ifresh ifresh=sqlSession.getMapper(ifresh.class);
-			ifresh.insertmenu(s_seq, m_name, m_price, m_ex, uploadFileName, m_cal);
-	        file.transferTo(f); //파일 폴더에 저장
-	     } catch (IllegalStateException e) {
-	        e.printStackTrace();
-	     } catch (IOException e) {
-	        e.printStackTrace();
-	     } 
-	     return "redirect:/m_up";
+		String uploadFileName = file.getOriginalFilename();
+		uploadFileName = uploadFileName.substring(uploadFileName.lastIndexOf("/")+1); //문자열 자르기
+		UUID uuid=UUID.randomUUID(); //랜덤이름생성
+		uploadFileName=uuid.toString() + "_" + uploadFileName; //랜덤이름_업로드파일명
+		File f= new File(upLoadDirectory,uploadFileName);
+		try {
+			if(m_seq==0) {
+				ifresh.insertmenu(s_seq, name, price, ex, uploadFileName, cal);
+				file.transferTo(f); //파일 폴더에 저장
+			}else if(m_seq!=0){
+				ifresh.modifyMenu(name, price, ex, uploadFileName, cal, m_seq, s_seq);
+				file.transferTo(f); //파일 폴더에 저장
+			}
+
+		} catch (IllegalStateException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} 
+		return "redirect:/m_up";
 	}
 	
-//	//이미지 저장 시 랜덤 이름 만들기
-//	@RequestMapping("/doit")
-//	   public String doit(@RequestParam("file") MultipartFile file) {
-//		String upLoadDirectory= "C:/Users/admin/git/repository/food/src/main/webapp/resources/test";
-//	      
-//	      String uploadFileName = file.getOriginalFilename();
-//	      uploadFileName = uploadFileName.substring(uploadFileName.lastIndexOf("/")+1); //문자열 자르기
-//	      
-//	      UUID uuid=UUID.randomUUID(); //랜덤이름생성
-//	      uploadFileName=uuid.toString() + "_" + uploadFileName; //랜덤이름_업로드파일명
-//	      File f= new File(upLoadDirectory,uploadFileName);
-//	      try {
-//	         //디비 저장 sql문 적기
-//	         file.transferTo(f); //파일 폴더에 저장
-//	      } catch (IllegalStateException e) {
-//	         e.printStackTrace();
-//	      } catch (IOException e) {
-//	         e.printStackTrace();
-//	      } 
-//	      return "redirect:/upload";
-//	   }
+	//이미지 업로드 jsp
+	@RequestMapping("/test")
+	public String doTest() {
+		return "upload2";
+	}
 	
-	
-	
+	//이미지 업로드 함수
+	@RequestMapping(value="/img", method=RequestMethod.POST)
+	public String doImg() {
+		return "upload";
+	}
 	
 	//메뉴리스트 불러오기
 	@ResponseBody
@@ -168,13 +174,14 @@ public class HomeController {
 	public String doMls(@RequestParam("s_seq") String s_se, Model model) {
 		ifresh ifresh=sqlSession.getMapper(ifresh.class);
 		ArrayList<menuVO> armenu=ifresh.selectMenulit(s_se);
-		System.out.println("s_list.size=["+armenu.size()+"]");
+		System.out.println("menu_list.size=["+armenu.size()+"]");
 		
 		JSONArray ja=new JSONArray();
 		for(int i=0;i<armenu.size();i++) {
 			menuVO list=armenu.get(i);
 			JSONObject jo=new JSONObject();
 			jo.put("m_seq", list.getMenu_seqno());
+			jo.put("s_seq", list.getS_se());
 			jo.put("m_img", list.getMenu_img());
 			jo.put("m_name", list.getMenu_name());
 			jo.put("m_price", list.getMenu_price());
@@ -187,37 +194,39 @@ public class HomeController {
 	}
 	
 	
-	//메뉴 수정하기
+	//메뉴수정을 위한 detail
 	@ResponseBody
-	@RequestMapping(value="/menumdf", produces="application/json;charset=UTF-8")
-	public String doMenuModify() {
+	@RequestMapping(value="/update", method=RequestMethod.POST, produces="application/json;charset=UTF-8")
+	public String doMenuUpdate(HttpServletRequest req, Model model) {
+		ifresh ifresh=sqlSession.getMapper(ifresh.class);
+		int m_seq=Integer.parseInt(req.getParameter("m_seq"));
+		String s_seq=req.getParameter("s_seq");
+		menuVO mvo=ifresh.updateMenuList(m_seq, s_seq);
 		
-		return "";
+		JSONArray ja=new JSONArray();
+		JSONObject jo=new JSONObject();
+		jo.put("m_img", mvo.getMenu_img());
+		jo.put("m_name", mvo.getMenu_name());
+		jo.put("m_price", mvo.getMenu_price());
+		jo.put("m_cal", mvo.getMenu_cal());
+		jo.put("m_ex", mvo.getMenu_ex());
+		ja.add(jo);
+
+		System.out.println("ja.s_mvo()="+ja.toJSONString());
+		return ja.toJSONString();
 	}
-	
 	
 	//메뉴 삭제하기
-	@ResponseBody
-	@RequestMapping(value="/menudlt", produces="application/json;charset=UTF-8")
-	public String doMenuDelete() {
-		
-		return "";
+	@RequestMapping(value="/del")
+	public String doMenuDelete(@RequestParam("m_seq") int m_seq, @RequestParam("s_seq") String s_seq) {
+		ifresh ifresh=sqlSession.getMapper(ifresh.class);
+		ifresh.deleteMenu(m_seq, s_seq);
+		System.out.println("delete_mseq="+m_seq+", sseq="+s_seq);
+		return "redirect:/m_up";
 	}
 	
 	
-	//이미지 업로드 jsp
-	@RequestMapping("/test")
-	public String doTest() {
-		
-		return "upload2";
-	}
-	
-	//이미지 업로드 함수
-	@RequestMapping(value="/img", method=RequestMethod.POST)
-	public String doImg() {
-		
-		return "upload";
-	}
+
 	
 
 	

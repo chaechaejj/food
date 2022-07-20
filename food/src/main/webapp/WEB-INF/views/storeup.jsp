@@ -1,5 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ page session="false" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -7,10 +9,23 @@
 <title>가게 등록</title>
 </head>
 <body>
+<c:if test="${userinfo == '' }">
+	<p align=right><a href='login'>로그인</a>&nbsp;<a href='signin'>회원가입</a></p>
+</c:if>
+<c:if test="${userinfo != '' }">
+	<c:if test="${userType == '손님' }">
+		<p align=right><a onclick=location.href='signUp'>${userinfo} 님🍮</a> &nbsp;<a href='logout'>로그아웃</a></p>
+	</c:if>
+	<c:if test="${userType == '사장님' }">
+		<p align=right><a onclick=location.href='signUp'>${userinfo} 님👩🏻‍🍳</a> &nbsp;<a href='logout'>로그아웃</a></p>
+	</c:if>
+</c:if>
+
+
 <div class="store-box">
 	<div class ="name-box">
 		<span><h3>가게등록하기</h3></span>
-		<input type=hidden id=m_id value="${userinfo}">
+		<input type=text id=m_id value="${userinfo}">
 	</div>
 	<p>가게 이름</p><input type=text id=storename />
 	<p>가게 주소</p>
@@ -57,7 +72,17 @@ $(document)
 		data:{sid:sid, sname:sname, post:post, saddress:saddress, sdetail:sdetail, 
 			  sextra:sextra, snum:snum, stel:stel, smenu:smenu, simg:simg},
 		success: function(){
-					
+			sid=$('#m_id').val('');
+			sname=$('#storename').val('');
+			post=$('#postcode').val('');
+			saddress=$('#address').val('');
+			sdetail=$('#detailAddress').val('');
+			sextra=$('#extraAddress').val('');
+			snum=$('#num').val('');
+			stel=$('#tele').val('');
+			smenu=$('#menutype option:selected').remove();
+			simg=$('#s_img').val('');
+			/* 메인화면으로 이동하기 */		
 		}
 	})
 })
@@ -127,6 +152,14 @@ function loadstype(){
 		}
 	})
 }
+
+//가게 등록화면 보여주기 (수정버튼 만들기/ 메뉴등록 버튼 만들기)
+function loadStorelist(){
+	
+	
+	
+}
+
 </script>
 
 </html>
