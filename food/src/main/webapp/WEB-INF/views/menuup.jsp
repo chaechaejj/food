@@ -7,67 +7,92 @@
 <title>메뉴 등록</title>
 </head>
 <style>
+#container{
+	margin: 150px 50px 0 50px;
+	
+}
+#container input[type="text"], input[type="number"]{
+	border: none;
+    outline: none;
+    height: 20px;
+    font-size: 16px;
+}
+#container input[type="number"]{
+    text-align: right;
+}
+
 #menuin-box{
 	background:skyblue;
 	float:left;
 	width:400px;
-	height:500px
+	height:600px;
+	padding-left: 50px;
+	outline:none;
 }
+
 
 #list-box{
 	background:yellow;
 	float:left;
 	width:400px;
-	height:500px;
+	height:600px;
 }
 
 #table-box{
 	background:pink;
 	overflow:scroll;
 	width:400px;
-	height:400px;
+	height:500px;
 	margin:auto;
 }
 #tbl, tr, td{
 	border-collapse:collapse;
 	border:1px solid brown;
 }
+#view{
+	width:100px;
+	height:100px;
+}
+
 
 </style>
 <body>
-<div id="menuin-box">
-<!-- 메뉴 등록 & 수정 -->
-<form action="menu" method="post" enctype="multipart/form-data">
-	<span><h3>메뉴 등록하기</h3></span>
-	<input type=text id=s_seq name=s_seq value="${sVO.s_seqno}"> <!-- 가게시퀀스 -->
-	<input type=text id="m_seq" name="m_seq" value="0">
-	<p>메뉴이름</p><input type=text id=menuname name=menuname >
-	<p>가격</p><input type=number id=menuprice name=menuprice min=0 val=0 >원
-	<p>칼로리</p><input type=text id=menukcal name=menukcal min=0 >kcal
-	<p>설명</p><input type=text id=menuex name=menuex >
-	<p>메뉴이미지</p>
-	<input type=file id=m_img name=file>&nbsp;&nbsp;
-	<img id="view"><br><br>
-	<input type=submit id=btnIn value="추가">&nbsp;&nbsp;
-	<input type=button id=btnReset value="비우기">&nbsp;&nbsp;
-	<input type=button id=btnDelete value="삭제">
-</form>
-
-<!-- 이미지만 수정하기 -->
-<form action="img_mo" method="post" enctype="multipart/form-data">
-	<input type=hidden id=s_seq2 name=s_seq2 value="${sVO.s_seqno}"> <!-- 가게시퀀스 -->
-	<input type=hidden id="m_seq2" name="m_seq2" value="0">
-	<input type=file id=img_mo name=file2 style="display:none;">&nbsp;&nbsp;
-	<input type=submit id=btnMo value="사진 수정하기" style="display:none;">
-</form>
-<input type=button id=btnReturn value="돌아가기" method='get' onclick="location.href='s_info'">
-</div>
-<!-- 등록된 메뉴리스트 불러오기 -->
-<div id="list-box">
-<span><h3>메뉴목록</h3></span>
-	<div id="table-box">
-		<input type=text id="s_seq3" value="${sVO.s_seqno}">
-		<table id="tbl"></table>
+<div id="container">
+	<div id="menuin-box">
+		<!-- 메뉴 등록 & 수정 -->
+		<form action="menu" method="post" enctype="multipart/form-data">
+			<span><h3>메뉴 등록하기</h3></span>
+			<input type=hidden id=s_seq name=s_seq value="${sVO.s_seqno}"> <!-- 가게시퀀스 -->
+			<input type=hidden id="m_seq" name="m_seq" value="0">
+			<p>메뉴이름</p><input type=text id=menuname name=menuname >
+			<p>가격</p><input type=number id=menuprice name=menuprice min=0 value=0 >원
+			<p>칼로리</p><input type=number id=menukcal name=menukcal min=0  value=0>kcal
+			<p>설명</p><input type=text id=menuex name=menuex >
+			<p>메뉴이미지</p>
+			<img id="view" art="image">
+			<input type=file id=m_img name=file>&nbsp;&nbsp;
+			<br><br>
+			<input type=submit id=btnIn value="추가">&nbsp;&nbsp;
+			<input type=button id=btnReset value="비우기">&nbsp;&nbsp;
+			<input type=button id=btnDelete value="삭제">
+		</form>
+		
+		<!-- 이미지만 수정하기 -->
+		<form action="img_mo" method="post" enctype="multipart/form-data">
+			<input type=hidden id=s_seq2 name=s_seq2 value="${sVO.s_seqno}"> <!-- 가게시퀀스 -->
+			<input type=hidden id="m_seq2" name="m_seq2" value="0">
+			<input type=file id=img_mo name=file2 style="display:none;">&nbsp;&nbsp;
+			<input type=submit id=btnMo value="사진 수정하기" style="display:none;">
+		</form>
+		<input type=button id=btnReturn value="돌아가기" method='get' onclick="location.href='s_info'">
+	</div>
+	<!-- 등록된 메뉴리스트 불러오기 -->
+	<div id="list-box">
+		<span><h3>메뉴목록</h3></span>
+		<div id="table-box">
+			<input type=hidden id="s_seq3" value="${sVO.s_seqno}">
+			<table id="tbl"></table>
+		</div>
 	</div>
 </div>
 </body>
@@ -77,6 +102,9 @@ $(document)
 .ready(function(){
 	loadmenulist();
 })
+
+
+
 
 //비우기 버튼
 .on('click','#btnReset',function(){
@@ -92,6 +120,10 @@ $(document)
 	$('#btnMo').hide();
 	$('#m_img').show();
 	$('#img_mo').hide();
+	
+	/* $('#view').attr("art","image"); */
+	$('#view')
+	
 })
 
 //수정 전 데이터 불러오기
@@ -165,6 +197,9 @@ $(document)
 })
 
 
+
+
+
 //메뉴목록 리스트 보여주기
 function loadmenulist(){
 	let s_seq=$('#s_seq').val();
@@ -181,7 +216,7 @@ function loadmenulist(){
 				for(let i=0;i<data.length;i++){
 					let jo=data[i];
 					str+="<tr><td rowspan=4><img src='/test/"
-						+jo['m_img']+"'></td><td>메뉴이름</td><td>"+jo['m_name']
+						+jo['m_img']+"' style='width:100px;height:100px;'></td><td>메뉴이름</td><td>"+jo['m_name']
 						+"</td><td>가격</td><td>"+jo['m_price']
 						+"원</td><td rowspan=4><input type=button id=btnSel value=선택><input type=hidden id=mse value='"+jo['m_seq']
 						+"'></td></tr><tr><td>칼로리</td><td colspan=3 align=left>"
