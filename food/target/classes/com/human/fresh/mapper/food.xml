@@ -29,9 +29,13 @@ insert into store values(store_seq.nextval,#{param1},#{param2},#{param3},#{param
 	select menu_name, menu_price, menu_ex, menu_img, menu_cal from menu where menu_seqno=#{param1} and s_se=#{param2}
 </select>
 <update id="modifyMenu">
-	update menu set menu_name=#{param1}, menu_price=#{param2}, menu_ex=#{param3}, menu_img=#{param4}, menu_cal=#{param5} 
-				where menu_seqno=#{param6} and s_se=#{param7}
+	update menu set menu_name=#{param1}, menu_price=#{param2}, menu_ex=#{param3}, menu_cal=#{param4} 
+				where menu_seqno=#{param5} and s_se=#{param6}
 </update>
+<update id="modifyimage">
+	update menu set menu_img=#{param1} where menu_seqno=#{param2} and s_se=#{param3}
+</update>
+
 <!-- 메뉴삭제 -->
 <delete id="deleteMenu">
 	delete from menu where menu_seqno=#{param1} and s_se=#{param2}
@@ -44,7 +48,6 @@ insert into store values(store_seq.nextval,#{param1},#{param2},#{param3},#{param
 <select id="selStore" resultType="com.human.fresh.storeVO">
    select * from store where m_id = #{param1}
 </select>
-
 
 
 </mapper>

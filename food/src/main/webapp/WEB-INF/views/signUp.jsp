@@ -67,6 +67,8 @@ footer{
                <td>가게주소:</td><td>${sVO.s_address} ${sVO.s_extraaddress}</td>
             </tr>
          </table>
+         <br>
+         <input type=button id=btn_s value="가게정보확인 및 수정" method='get' onclick="location.href='s_info'">
       </c:if>
    </div>
 </c:if>

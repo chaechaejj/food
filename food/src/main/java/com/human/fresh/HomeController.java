@@ -111,10 +111,22 @@ public class HomeController {
 		return "0";
 	}
 	
+	//가게정보호 이동
+	@RequestMapping("/s_info")
+	public String doSinfo() {
+		
+		return "storeinfo";
+	}
+	
+	
 	//메뉴등록 jsp
 	@RequestMapping("/m_up")
-	public String doMup() {
-		//가게시퀀스 가져오기
+	public String doMup(HttpServletRequest req, Model model) {
+		HttpSession session=req.getSession();
+		ifresh ifresh=sqlSession.getMapper(ifresh.class);
+		model.addAttribute("userinfo", session.getAttribute("userid"));
+		storeVO sVO = ifresh.selStore((String)session.getAttribute("userid"));
+	    model.addAttribute("sVO",sVO);
 		return "menuup";
 	}
 	
@@ -125,7 +137,6 @@ public class HomeController {
 		String name=req.getParameter("menuname");
 		int price=Integer.parseInt(req.getParameter("menuprice"));
 		String ex=req.getParameter("menuex");
-		String img=req.getParameter("m_img");
 		String cal=req.getParameter("menukcal");
 		int m_seq=Integer.parseInt(req.getParameter("m_seq"));
 		String s_seq=req.getParameter("s_seq");
@@ -142,11 +153,41 @@ public class HomeController {
 		try {
 			if(m_seq==0) {
 				ifresh.insertmenu(s_seq, name, price, ex, uploadFileName, cal);
-				file.transferTo(f); //파일 폴더에 저장
 			}else if(m_seq!=0){
-				ifresh.modifyMenu(name, price, ex, uploadFileName, cal, m_seq, s_seq);
+				ifresh.modifyMenu(name, price, ex, cal, m_seq, s_seq);
+			}
+			if(uploadFileName!=null) {
 				file.transferTo(f); //파일 폴더에 저장
 			}
+			
+			
+		} catch (IllegalStateException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} 
+		return "redirect:/m_up";
+	}
+	
+	//이미지 수정하기
+	@RequestMapping(value="/img_mo")
+	public String doImgUpdate(HttpServletRequest req, MultipartHttpServletRequest mreq) {
+		ifresh ifresh=sqlSession.getMapper(ifresh.class);
+		int m_seq=Integer.parseInt(req.getParameter("m_seq2"));
+		String s_seq=req.getParameter("s_seq2");
+		MultipartFile file=mreq.getFile("file2");
+		
+		String upLoadDirectory= "C:/Users/admin/git/repository/food/src/main/webapp/resources/test";
+		System.out.println("file="+file+"//m_seq="+m_seq+"/s_seq="+s_seq);
+		  
+		String uploadFileName2 = file.getOriginalFilename();
+		uploadFileName2 = uploadFileName2.substring(uploadFileName2.lastIndexOf("/")+1); //문자열 자르기
+		UUID uuid=UUID.randomUUID(); //랜덤이름생성
+		uploadFileName2=uuid.toString() + "_" + uploadFileName2; //랜덤이름_업로드파일명
+		File f= new File(upLoadDirectory,uploadFileName2);
+		try {
+			ifresh.modifyimage(uploadFileName2, m_seq, s_seq);
+			file.transferTo(f); //파일 폴더에 저장
 
 		} catch (IllegalStateException e) {
 			e.printStackTrace();
